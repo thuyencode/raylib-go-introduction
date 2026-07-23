@@ -10,9 +10,12 @@
 # But not these files...
 !/.gitignore
 !.env.example
+
 !*.go
 !go.sum
 !go.mod
+
+!assets/**/*
 
 !README.md
 !LICENSE
