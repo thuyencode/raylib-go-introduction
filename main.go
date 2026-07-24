@@ -1,41 +1,45 @@
 package main
 
 import (
-	"fmt"
 	"path"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+const WINDOW_WIDTH = 700
+const WINDOW_HEIGHT = 310
+
 func main() {
-	rl.InitWindow(800, 400, "raylib [core] example - basic window")
+	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Movement in Raylib")
 	defer rl.CloseWindow()
 
-	rl.SetTargetFPS(60)
-
 	spaceshipPath := path.Join("assets", "spaceship.png")
-	spaceshipImage := rl.LoadImage(spaceshipPath)
-	spaceshipPosX := 400 - (spaceshipImage.Width / 2)
-	spaceshipPosY := 200 - (spaceshipImage.Height / 2)
-	spaceshipTexture := rl.LoadTextureFromImage(spaceshipImage)
-
-	cowboyPath := path.Join("assets", "animation", "0.png")
-	cowboyImage := rl.LoadImage(cowboyPath)
-	cowboyPosX := 800 - cowboyImage.Width
-	cowboyPosY := 400 - cowboyImage.Height
-	rl.ImageColorInvert(cowboyImage)
-	cowboyTexture := rl.LoadTextureFromImage(cowboyImage)
+	spaceshipTexture := rl.LoadTexture(spaceshipPath)
+	spaceshipPosX := float32(WINDOW_WIDTH/2 - spaceshipTexture.Width/2)
+	spaceshipPosY := float32(WINDOW_HEIGHT/2 - spaceshipTexture.Height/2)
+	spaceshipPos := rl.NewVector2(spaceshipPosX, spaceshipPosY)
+	spaceshipDirection := rl.NewVector2(1, 1)
+	var spaceshipSpeed float32 = 50.0
 
 	for !rl.WindowShouldClose() {
+		targetFPS := int32(rl.GetMonitorRefreshRate(rl.GetCurrentMonitor()))
+		deltaTime := rl.GetFrameTime()
+		rl.SetTargetFPS(targetFPS)
+
 		rl.BeginDrawing()
-
 		rl.ClearBackground(rl.RayWhite)
-		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 10, 10, 24, rl.Green)
 
-		rl.DrawTexture(spaceshipTexture, spaceshipPosX, spaceshipPosY, rl.White)
-		rl.DrawTexture(cowboyTexture, cowboyPosX, cowboyPosY, rl.White)
+		rl.DrawFPS(10, 10)
+		rl.DrawTextureV(spaceshipTexture, spaceshipPos, rl.White)
 
-		rl.DrawLineEx(rl.NewVector2(100, 100), rl.NewVector2(300, 100), 10, rl.Blue)
+		// Check for collision
+		if WINDOW_WIDTH-spaceshipPos.X > float32(spaceshipTexture.Width) {
+			spaceshipPos.X += deltaTime * spaceshipSpeed * spaceshipDirection.X
+		}
+
+		if WINDOW_HEIGHT-spaceshipPos.Y > float32(spaceshipTexture.Height) {
+			spaceshipPos.Y += deltaTime * spaceshipSpeed * spaceshipDirection.Y
+		}
 
 		rl.EndDrawing()
 	}
