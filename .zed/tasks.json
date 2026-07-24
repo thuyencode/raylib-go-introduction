@@ -1,0 +1,36 @@
+// Project tasks configuration. See https://zed.dev/docs/tasks for documentation.
+[
+	{
+		"label": "dev",
+		"command": "make dev",
+		"hide": "never"
+	},
+	{
+		"label": "build",
+		"command": "make build",
+		"hide": "on_success",
+		"save": "all"
+	},
+	{
+		"label": "start",
+		"command": "make start",
+		"hide": "never"
+	},
+	{
+		"label": "lint",
+		"command": "make lint",
+		"hide": "on_success",
+		"save": "all"
+	},
+	{
+		"label": "format",
+		"command": "make format",
+		"hide": "on_success",
+		"save": "all"
+	},
+	{
+		"label": "clean",
+		"command": "make clean",
+		"hide": "on_success"
+	}
+]

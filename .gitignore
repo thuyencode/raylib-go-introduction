@@ -10,6 +10,9 @@
 # But not these files...
 !/.gitignore
 !.env.example
+!Makefile
+!.zed/tasks.json
+!.air.toml
 
 !*.go
 !go.sum
