@@ -5,6 +5,7 @@ import (
 	"path"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"github.com/thuyencode/raylib-go-introduction/pkg/helper"
 )
 
 const WINDOW_WIDTH = 700
@@ -23,32 +24,20 @@ func main() {
 	spaceshipPosY := float32(WINDOW_HEIGHT/2 - spaceshipHalfH)
 	spaceshipPos := rl.NewVector2(spaceshipPosX, spaceshipPosY)
 	spaceshipDirection := rl.NewVector2(0, 0)
-	const spaceshipSpeed float32 = 100.0
+
+	const spaceshipSpeed float32 = 200.0
 
 	for !rl.WindowShouldClose() {
 		targetFPS := int32(rl.GetMonitorRefreshRate(rl.GetCurrentMonitor()))
 		deltaTime := rl.GetFrameTime()
 		rl.SetTargetFPS(targetFPS)
 
-		spaceshipDirection.X = 0
-		spaceshipDirection.Y = 0
-
-		if rl.IsKeyDown(rl.KeyLeft) {
-			spaceshipDirection.X = -1
-		}
-		if rl.IsKeyDown(rl.KeyRight) {
-			spaceshipDirection.X = 1
-		}
-		if rl.IsKeyDown(rl.KeyUp) {
-			spaceshipDirection.Y = -1
-		}
-		if rl.IsKeyDown(rl.KeyDown) {
-			spaceshipDirection.Y = 1
-		}
+		spaceshipDirection.X = float32(helper.BoolToInt(rl.IsKeyDown(rl.KeyRight)) - helper.BoolToInt(rl.IsKeyDown(rl.KeyLeft)))
+		spaceshipDirection.Y = float32(helper.BoolToInt(rl.IsKeyDown(rl.KeyDown)) - helper.BoolToInt(rl.IsKeyDown(rl.KeyUp)))
+		spaceshipDirection = spaceshipDirection.Normalize()
 
 		spaceshipPos.X += spaceshipDirection.X * spaceshipSpeed * deltaTime
 		spaceshipPos.Y += spaceshipDirection.Y * spaceshipSpeed * deltaTime
-		spaceshipDirection = spaceshipDirection.Normalize()
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
