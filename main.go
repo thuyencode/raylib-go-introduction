@@ -22,11 +22,12 @@ func main() {
 		targetFPS := int32(rl.GetMonitorRefreshRate(rl.GetCurrentMonitor()))
 		rl.SetTargetFPS(targetFPS)
 
+		player.Update()
+
 		rl.BeginDrawing()
 		rl.DrawFPS(10, 10)
 		rl.ClearBackground(rl.RayWhite)
 
-		player.Update()
 		player.Draw()
 		player.DrawPlayerPos(10, 30, 20, rl.Green)
 
