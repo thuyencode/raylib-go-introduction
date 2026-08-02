@@ -5,10 +5,10 @@ import (
 	et "github.com/thuyencode/raylib-go-introduction/pkg/entity"
 )
 
-const WINDOW_WIDTH = 1920
-const WINDOW_HEIGHT = 1080
+const WINDOW_WIDTH = 960
+const WINDOW_HEIGHT = 540
 const SPEED = 300.0
-const BLOCK_SIZE = 100
+const BLOCK_SIZE = 50
 
 var LEVEL_MAP = []string{
 	"1111111111111111111",
@@ -29,7 +29,7 @@ func main() {
 	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Collision in Go and Raylib")
 	defer rl.CloseWindow()
 
-	player := et.NewPlayer(rl.NewRectangle(400, 300, 60, 60), rl.Red, SPEED)
+	player := et.NewPlayer(rl.NewRectangle(0, 0, 30, 30), rl.Red, SPEED)
 	player.SetPosToCenter(WINDOW_WIDTH, WINDOW_HEIGHT)
 
 	level := et.NewLevel(LEVEL_MAP, rl.Gray, BLOCK_SIZE)
@@ -49,6 +49,7 @@ func main() {
 		level.Draw()
 		player.Draw()
 		rl.DrawFPS(10, 10)
+		player.DrawPlayerPos(10, 30, 20, rl.DarkBlue)
 
 		rl.EndDrawing()
 	}
