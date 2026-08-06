@@ -15,9 +15,9 @@ type Player struct {
 	Speed     float32
 }
 
-func NewPlayer(rectangle rl.Rectangle, color rl.Color, speed float32) Player {
+func NewPlayer(rectangle rl.Rectangle, color rl.Color, speed float32) *Player {
 	direction := rl.Vector2{X: 0, Y: 0}
-	return Player{rectangle, color, direction, speed}
+	return &Player{rectangle, color, direction, speed}
 }
 
 func (player *Player) SetPosToCenter(windowWidth int32, windowHeight int32) {
