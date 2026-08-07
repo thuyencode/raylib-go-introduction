@@ -1,31 +1,34 @@
 package main
 
 import (
-	"math/rand/v2"
+	"fmt"
+	"path"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
-	e "github.com/thuyencode/raylib-go-introduction/pkg/entity"
+	h "github.com/thuyencode/raylib-go-introduction/pkg/helper"
 )
 
 const WINDOW_WIDTH = 960
 const WINDOW_HEIGHT = 540
+const ANIMATION_FRAME_NUM = 8
+const SPEED = 5
 
 func main() {
 	rl.SetTraceLogLevel(rl.LogError)
-	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Collision in Go and Raylib")
+	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Animation in Go and Raylib")
 	defer rl.CloseWindow()
 
-	sprite := e.NewSprite(rl.NewVector2(100, 100), [2]float32{30, 30})
+	animationFrames := make([]rl.Texture2D, ANIMATION_FRAME_NUM)
 
-	timer1 := e.NewTimer(1.5, true, true, sprite.RandomizeColor)
+	for i := range ANIMATION_FRAME_NUM {
+		animationFrames[i] = rl.LoadTexture(path.Join("assets", "animation", fmt.Sprintf("%d.png", i)))
+	}
 
-	timer2 := e.NewTimer(4, true, true, func() {
-		sprite.SetPos(rl.NewVector2(float32(rand.IntN(WINDOW_WIDTH)), float32(rand.IntN(WINDOW_HEIGHT))))
-	})
+	var animationFrameIndex float32 = 0
 
 	for !rl.WindowShouldClose() {
-		timer1.Update()
-		timer2.Update()
+		dt := rl.GetFrameTime()
+		animationFrameIndex += SPEED * dt
 
 		monitor := rl.GetCurrentMonitor()
 		targetFPS := int32(rl.GetMonitorRefreshRate(monitor))
@@ -35,7 +38,9 @@ func main() {
 		rl.ClearBackground(rl.Black)
 		rl.DrawFPS(10, 10)
 
-		sprite.Draw()
+		frame := animationFrames[int(animationFrameIndex)%len(animationFrames)]
+		posX, posY := h.GetCenterPos(WINDOW_WIDTH, WINDOW_HEIGHT, frame.Width, frame.Height)
+		rl.DrawTexture(frame, posX, posY, rl.White)
 
 		rl.EndDrawing()
 	}
