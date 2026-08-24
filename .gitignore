@@ -11,8 +11,11 @@
 !/.gitignore
 !.env.example
 !Makefile
-!.zed/tasks.json
 !.air.toml
+!.tool-versions
+
+!.zed/tasks.json
+!.gram/tasks.jsonc
 
 !*.go
 !go.sum
@@ -22,8 +25,6 @@
 
 !README.md
 !LICENSE
-
-# !Makefile
 
 # ...even if they are in subdirectories
 !*/

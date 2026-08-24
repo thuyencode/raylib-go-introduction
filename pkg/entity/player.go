@@ -1,45 +1,49 @@
 package entity
 
 import (
-	"fmt"
-	"image/color"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
-	h "github.com/thuyencode/raylib-go-introduction/pkg/helper"
+	c "github.com/thuyencode/raylib-go-introduction/pkg/configs"
+	h "github.com/thuyencode/raylib-go-introduction/pkg/util"
 )
 
 type Player struct {
-	rl.Rectangle
-	Color     rl.Color
-	Direction rl.Vector2
-	Speed     float32
+	Sprite
+	SetLaserPos func(pos rl.Vector2)
 }
 
-func NewPlayer(rectangle rl.Rectangle, color rl.Color, speed float32) *Player {
-	direction := rl.Vector2{X: 0, Y: 0}
-	return &Player{rectangle, color, direction, speed}
+func NewPlayer(texture rl.Texture2D, pos rl.Vector2, laserCallback func(pos rl.Vector2)) *Player {
+	return &Player{
+		Sprite:      *NewSprite(texture, pos, c.PLAYER_SPEED, rl.NewVector2(0, 0)),
+		SetLaserPos: laserCallback,
+	}
 }
 
-func (player *Player) SetPosToCenter(windowWidth int32, windowHeight int32) {
-	player.X = float32(windowWidth/2) - player.Width/2
-	player.Y = float32(windowHeight/2) - player.Height/2
-}
-
-func (player *Player) Draw() {
-	rl.DrawRectangleRec(player.Rectangle, player.Color)
-}
-
-func (player *Player) Update() {
-	player.Direction.X = float32(h.BoolToInt(rl.IsKeyDown(rl.KeyRight)) - h.BoolToInt(rl.IsKeyDown(rl.KeyLeft)))
-	player.Direction.Y = float32(h.BoolToInt(rl.IsKeyDown(rl.KeyDown)) - h.BoolToInt(rl.IsKeyDown(rl.KeyUp)))
+func (player *Player) Input() {
+	player.Direction.X = float32(
+		h.BoolToInt(rl.IsKeyDown(rl.KeyRight) || rl.IsKeyDown(rl.KeyD)) -
+			h.BoolToInt(rl.IsKeyDown(rl.KeyLeft) || rl.IsKeyDown(rl.KeyA)))
+	player.Direction.Y = float32(
+		h.BoolToInt(rl.IsKeyDown(rl.KeyDown) || rl.IsKeyDown(rl.KeyS)) -
+			h.BoolToInt(rl.IsKeyDown(rl.KeyUp) || rl.IsKeyDown(rl.KeyW)))
 	player.Direction = player.Direction.Normalize()
 
-	dt := rl.GetFrameTime()
-
-	player.X += player.Direction.X * dt * player.Speed
-	player.Y += player.Direction.Y * dt * player.Speed
+	if rl.IsKeyPressed(rl.KeySpace) || rl.IsKeyPressed(rl.KeyEnter) {
+		player.SetLaserPos(
+			rl.NewVector2(
+				player.Pos.X+float32(player.Texture.Width/2),
+				player.Pos.Y-60,
+			),
+		)
+	}
 }
 
-func (player *Player) DrawPlayerPos(posX int32, posY int32, fontSize int32, col color.RGBA) {
-	rl.DrawText(fmt.Sprintf("Player POS: %.0f %.0f", player.X, player.Y), posX, posY, fontSize, col)
+func (player *Player) Constraint() {
+	player.Pos.X = rl.Clamp(player.Pos.X, 0, float32(c.WINDOW_WIDTH-player.Texture.Width))
+	player.Pos.Y = rl.Clamp(player.Pos.Y, 0, float32(c.WINDOW_HEIGHT-player.Texture.Height))
+}
+
+func (player *Player) Update(deltaTime float32) {
+	player.Input()
+	player.Move(deltaTime)
+	player.Constraint()
 }

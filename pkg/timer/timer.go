@@ -1,31 +1,23 @@
-package entity
+package timer
 
-import (
-	rl "github.com/gen2brain/raylib-go/raylib"
-)
+import rl "github.com/gen2brain/raylib-go/raylib"
 
 type Timer struct {
 	Duration     float64
 	StartTime    float64
-	ShouldRepeat bool
 	IsActive     bool
-	Callback     func()
+	ShouldRepeat bool
+	callback     func()
 }
 
-func NewTimer(duration float64, repeat bool, autostart bool, callback func()) *Timer {
-	timer := Timer{
+func NewTimer(duration float64, repeat bool, callback func()) *Timer {
+	return &Timer{
 		Duration:     duration,
 		StartTime:    0,
-		ShouldRepeat: repeat,
 		IsActive:     false,
-		Callback:     callback,
+		ShouldRepeat: repeat,
+		callback:     callback,
 	}
-
-	if autostart {
-		timer.Activate()
-	}
-
-	return &timer
 }
 
 func (timer *Timer) Activate() {
@@ -48,8 +40,8 @@ func (timer *Timer) Update() {
 	}
 
 	if rl.GetTime()-timer.StartTime >= timer.Duration {
-		if timer.Callback != nil && timer.StartTime > 0 {
-			timer.Callback()
+		if timer.callback != nil && timer.StartTime > 0 {
+			timer.callback()
 		}
 
 		timer.Deactivate()
