@@ -1,9 +1,10 @@
-.PHONY: dev build start lint format clean
+.PHONY: dev build build-windows start lint format clean
 
-BINARY=raylib-go-introduction
+BINARY=main
+ENV_FILE=.env
 
-ifneq (,$(wildcard .env))
-include .env
+ifneq (,$(wildcard $(ENV_FILE)))
+include $(ENV_FILE)
 endif
 
 dev:
@@ -11,6 +12,9 @@ dev:
 
 build:
 	go build -tags $(BUILD_TAGS) -o $(BINARY) .
+
+build-windows:
+	CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -tags $(BUILD_TAGS) -ldflags "-s -w" -o $(BINARY).exe .
 
 start:
 	./$(BINARY)
@@ -22,4 +26,4 @@ format:
 	go fmt ./...
 
 clean:
-	rm -f $(BINARY)
+	rm -f $(BINARY) $(BINARY).exe

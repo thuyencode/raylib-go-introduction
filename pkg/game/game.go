@@ -86,9 +86,9 @@ func generateStars() []*e.Star {
 	return stars
 }
 
-func NewGame(shouldDisplayFPS bool, logLevel rl.TraceLogLevel) *Game {
+func NewGame(title string, shouldDisplayFPS bool, logLevel rl.TraceLogLevel) *Game {
 	rl.SetTraceLogLevel(logLevel)
-	rl.InitWindow(c.WINDOW_WIDTH, c.WINDOW_HEIGHT, "2D Game")
+	rl.InitWindow(c.WINDOW_WIDTH, c.WINDOW_HEIGHT, title)
 	rl.InitAudioDevice()
 
 	return &Game{

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	game := g.NewGame(true, rl.LogError)
+	game := g.NewGame("Space Shooter", true, rl.LogError)
 	game.SetPlayer(rl.NewVector2(0, 0), game.CreateLaser)
 	game.SetTimer(c.METEOR_TIMER_DURATION, true, game.CreateMeteor)
 
